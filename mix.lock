@@ -1,4 +1,4 @@
 %{"httpotion": {:git, "git://github.com/myfreeweb/httpotion.git", "e482c4fa0016049c7738dec7261b7b3b6659b3cc", []},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
-  "jsex": {:git, "git://github.com/talentdeficit/jsex.git", "9755fc4d9c33b66945000d9bbdbb32a72f418ac8", []},
-  "jsx": {:package, "2.0.3"}}
+  "jsex": {:git, "https://github.com/talentdeficit/jsex.git", "9755fc4d9c33b66945000d9bbdbb32a72f418ac8", []},
+  "jsx": {:hex, :jsx, "2.8.0"}}

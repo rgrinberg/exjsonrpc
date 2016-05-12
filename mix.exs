@@ -4,7 +4,7 @@ defmodule Exjsonrpc.Mixfile do
   def project do
     [app: :exjsonrpc,
      version: "0.0.1",
-     elixir: "~> 0.14.0-dev",
+     elixir: "~> 1.0",
      deps: deps]
   end
 
