@@ -75,9 +75,9 @@ defmodule Exjsonrpc.Server do
   def call(rpc, request) do
     method = rpc.methods[request.method]
     case Map.fetch request, :id  do
-      :error -> any_cast rpc.methods[request.method], request.params
+      :error -> any_cast method, request.params
       {:ok, id} ->
-        resp = case any_call(rpc.methods[request.method], request.params) do
+        resp = case any_call(method, request.params) do
           {:call, params} -> call(rpc, %{request | :params => params})
           {:error, res} -> make_error(res)
           {:exception, res} ->
