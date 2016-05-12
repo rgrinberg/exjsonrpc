@@ -8,7 +8,7 @@ defmodule Exjsonrpc.Client do
   end
 
   def response(resp) do
-    case JSEX.decode resp, [{:labels, :atom}] do
+    case JSX.decode resp, [{:labels, :atom}] do
       {:error, error} -> {:error, error}
       {:ok, resp} when is_list resp -> resp |> Enum.map(&response_single/1)
       {:ok, resp} -> response_single(resp)
@@ -18,11 +18,11 @@ defmodule Exjsonrpc.Client do
   def request(method: m, params: p) do
     notification_raw(m, p)
     |> Map.put_new(:id, 123)
-    |> JSEX.encode!
+    |> JSX.encode!
   end
 
   def notification(method: m, params: p) do
-    notification_raw(m, p) |> JSEX.encode!
+    notification_raw(m, p) |> JSX.encode!
   end
 
   defp notification_raw(m, p) do
@@ -141,20 +141,24 @@ defmodule Exjsonrpc.Server do
   end
 
   def handle_call(req, _from, rpc) do
-    resp = case JSEX.decode(req, [{:labels, :atom}]) do
-      :error ->
-        %{:code => -32700, :message => "Parse error", :jsonrpc => "2.0"}
+    resp =
+      case JSX.decode(req, [{:labels, :atom}]) do
+        :error ->
+          %{:code => -32700,
+            :message => "Parse error",
+            :jsonrpc => "2.0"}
         {:ok, req} -> jsoncall(rpc, req)
-    end
+      end
+
     if is_list(resp) or is_map(resp) do
-      {:reply, JSEX.encode!(resp), rpc}
+      {:reply, JSX.encode!(resp), rpc}
     else
       {:reply, :ok, rpc}
     end
   end
 
   def handle_cast(req, rpc) do
-    case JSEX.decode(req, [{:labels, :atom}]) do
+    case JSX.decode(req, [{:labels, :atom}]) do
       :error -> :ok
       {:ok, req} -> jsoncall(rpc, req)
     end

@@ -13,6 +13,6 @@ defmodule Exjsonrpc.Mixfile do
   end
 
   defp deps do
-    [{:jsex, github: "talentdeficit/jsex"}]
+    [{:exjsx, github: "talentdeficit/exjsx"}]
   end
 end
