@@ -1,7 +1,7 @@
 defmodule Exjsonrpc.Client do
   defp response_single(map) do
-    map = map |> Map.delete :jsonrpc
-    case map |> Map.fetch :result do
+    map = map |> Map.delete(:jsonrpc)
+    case map |> Map.fetch(:result) do
       :error -> {:error, map}
       {:ok, _} -> {:ok, map}
     end
@@ -10,7 +10,7 @@ defmodule Exjsonrpc.Client do
   def response(resp) do
     case JSEX.decode resp, [{:labels, :atom}] do
       {:error, error} -> {:error, error}
-      {:ok, resp} when is_list resp -> resp |> Enum.map &response_single/1
+      {:ok, resp} when is_list resp -> resp |> Enum.map(&response_single/1)
       {:ok, resp} -> response_single(resp)
     end
   end
@@ -47,7 +47,7 @@ defmodule Exjsonrpc.Server do
   end
 
   defp any_call({:spawn, method}, params) do
-    any_call(method, params) 
+    any_call(method, params)
   end
 
   defp any_call({method, _}, params) do
@@ -68,8 +68,8 @@ defmodule Exjsonrpc.Server do
 
   def make_error(res) do
     res
-    |> Map.put_new :code, -32603
-    |> Map.put_new :message, "Error processing request"
+    |> Map.put_new(:code, -32603)
+    |> Map.put_new(:message, "Error processing request")
   end
 
   def call(rpc, request) do
@@ -100,7 +100,7 @@ defmodule Exjsonrpc.Server do
   end
 
   defp has_keys?(map, [k | ks]) do
-    if map |> Map.has_key? k do
+    if map |> Map.has_key?(k) do
       has_keys?(map, ks)
     else
       false
@@ -124,7 +124,7 @@ defmodule Exjsonrpc.Server do
   end
 
   defp jsoncall(rpc, request) when is_list request do
-    request |> Enum.map fn(r) -> jsoncall_single(rpc, r) end
+    request |> Enum.map(fn(r) -> jsoncall_single(rpc, r) end)
   end
 
   defp jsoncall(rpc, request) do
@@ -141,7 +141,7 @@ defmodule Exjsonrpc.Server do
   end
 
   def handle_call(req, _from, rpc) do
-    resp = case JSEX.decode req, [{:labels, :atom}] do
+    resp = case JSEX.decode(req, [{:labels, :atom}]) do
       :error ->
         %{:code => -32700, :message => "Parse error", :jsonrpc => "2.0"}
         {:ok, req} -> jsoncall(rpc, req)
@@ -154,7 +154,7 @@ defmodule Exjsonrpc.Server do
   end
 
   def handle_cast(req, rpc) do
-    case JSEX.decode req, [{:labels, :atom}] do
+    case JSEX.decode(req, [{:labels, :atom}]) do
       :error -> :ok
       {:ok, req} -> jsoncall(rpc, req)
     end
